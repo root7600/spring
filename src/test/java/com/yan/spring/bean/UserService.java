@@ -7,7 +7,24 @@ package com.yan.spring.bean;
  */
 public class UserService {
 
-    public void say(){
-        System.out.println("welcome spring");
+    private  String userName;
+
+    public UserService() {
+    }
+
+    public UserService(String userName) {
+        this.userName = userName;
+    }
+
+    public void say(String args){
+        System.out.println(args+"say welcome spring");
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

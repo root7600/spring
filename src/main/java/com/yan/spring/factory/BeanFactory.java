@@ -1,5 +1,7 @@
 package com.yan.spring.factory;
 
+import com.yan.spring.exception.SpringBeanException;
+
 /**
  * @author hairui
  * @date 2021/11/1
@@ -13,4 +15,13 @@ public interface BeanFactory {
      * @return
      */
      Object getBean(String name);
+
+    /**
+     *
+     * @param name
+     * @param args
+     * @return
+     * @throws SpringBeanException
+     */
+    Object getBean(String name, Object... args) throws SpringBeanException;
 }
