@@ -7,24 +7,29 @@ package com.yan.spring.bean;
  */
 public class UserService {
 
-    private  String userName;
+    private String uId;
 
-    public UserService() {
+    private UserDao userDao;
+
+    public String getuId() {
+        return uId;
     }
 
-    public UserService(String userName) {
-        this.userName = userName;
+    public void setuId(String uId) {
+        this.uId = uId;
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     public void say(String args){
-        System.out.println(args+"say welcome spring");
+        System.out.println(args+"查询用户信息：" + userDao.queryUserName(uId));
     }
 
-    public String getUserName() {
-        return userName;
-    }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 }
