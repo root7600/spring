@@ -1,8 +1,8 @@
 package com.yan.spring.factory.support;
 
 import com.yan.spring.factory.config.BeanDefinition;
-import org.springframework.cglib.proxy.Enhancer;
-import org.springframework.cglib.proxy.NoOp;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.NoOp;
 
 import java.lang.reflect.Constructor;
 

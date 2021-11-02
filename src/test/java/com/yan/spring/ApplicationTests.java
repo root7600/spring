@@ -14,7 +14,7 @@ import org.junit.Test;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-class ApplicationTests {
+public class ApplicationTests {
 
     @Test
     public  void  testSpring(){
