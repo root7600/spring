@@ -9,6 +9,9 @@ public class UserService {
 
     private String uId;
 
+    private String company;
+    private String location;
+
     private UserDao userDao;
 
     public String getuId() {
@@ -31,5 +34,19 @@ public class UserService {
         System.out.println(args+"查询用户信息：" + userDao.queryUserName(uId));
     }
 
+    public String getCompany() {
+        return company;
+    }
 
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }

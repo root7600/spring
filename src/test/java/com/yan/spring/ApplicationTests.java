@@ -3,6 +3,9 @@ package com.yan.spring;
 import cn.hutool.core.io.IoUtil;
 import com.yan.spring.bean.UserDao;
 import com.yan.spring.bean.UserService;
+import com.yan.spring.common.MyBeanFactoryPostProcessor;
+import com.yan.spring.common.MyBeanPostProcessor;
+import com.yan.spring.context.support.ClassPathXmlApplicationContext;
 import com.yan.spring.core.io.DefaultResourceLoader;
 import com.yan.spring.core.io.Resource;
 import com.yan.spring.factory.PropertyValue;
@@ -142,6 +145,37 @@ public class ApplicationTests {
 
         // 3. 获取Bean对象调用方法
         UserService userService = beanFactory.getBean("userService", UserService.class);
+        userService.say("hairui");
+    }
+
+    @Test
+    public void test_BeanFactoryPostProcessorAndBeanPostProcessor(){
+        // 1.初始化 BeanFactory
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+
+        // 2. 读取配置文件&注册Bean
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
+        reader.loadBeanDefinitions("classpath:spring.xml");
+
+        // 3. BeanDefinition 加载完成 & Bean实例化之前，修改 BeanDefinition 的属性值
+        MyBeanFactoryPostProcessor beanFactoryPostProcessor = new MyBeanFactoryPostProcessor();
+        beanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
+
+        // 4. Bean实例化之后，修改 Bean 属性信息
+        MyBeanPostProcessor beanPostProcessor = new MyBeanPostProcessor();
+        beanFactory.addBeanPostProcessor(beanPostProcessor);
+
+        // 5. 获取Bean对象调用方法
+        UserService userService = beanFactory.getBean("userService", UserService.class);
+         userService.say("hairui");
+    }
+
+    @Test
+    public void test_xml_instant() {
+        // 1.初始化 BeanFactory
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:springPostProcessor.xml");
+        // 2. 获取Bean对象调用方法
+        UserService userService = applicationContext.getBean("userService", UserService.class);
         userService.say("hairui");
     }
 }

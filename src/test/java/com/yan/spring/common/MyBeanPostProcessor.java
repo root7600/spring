@@ -15,7 +15,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws SpringBeanException {
         if ("userService".equals(beanName)) {
             UserService userService = (UserService) bean;
-            userService.setuId("10002");
+            userService.setuId("10004");
         }
         return bean;
     }
