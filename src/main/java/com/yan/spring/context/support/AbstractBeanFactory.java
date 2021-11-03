@@ -1,15 +1,23 @@
-package com.yan.spring.factory.support;
+package com.yan.spring.context.support;
 
 import com.yan.spring.exception.SpringBeanException;
 import com.yan.spring.factory.BeanFactory;
 import com.yan.spring.factory.config.BeanDefinition;
+import com.yan.spring.factory.config.BeanPostProcessor;
+import com.yan.spring.factory.config.ConfigurableBeanFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author hairui
  * @date 2021/11/1
  * @des
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+
+    /** BeanPostProcessors to apply in createBean */
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
 
     @Override
     public Object getBean(String name) {
@@ -38,5 +46,19 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     protected abstract BeanDefinition getBeanDefinition(String beanName) throws SpringBeanException;
 
     protected abstract Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws SpringBeanException;
+
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor){
+        this.beanPostProcessors.remove(beanPostProcessor);
+        this.beanPostProcessors.add(beanPostProcessor);
+    }
+
+    /**
+     * Return the list of BeanPostProcessors that will get applied
+     * to beans created with this factory.
+     */
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
+    }
 
 }

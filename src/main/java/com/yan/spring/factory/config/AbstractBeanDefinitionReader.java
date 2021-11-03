@@ -2,7 +2,7 @@ package com.yan.spring.factory.config;
 
 import com.yan.spring.core.io.DefaultResourceLoader;
 import com.yan.spring.core.io.ResourceLoader;
-import com.yan.spring.factory.support.BeanDefinitionRegistry;
+import com.yan.spring.context.support.BeanDefinitionRegistry;
 
 /**
  * @author hairui
