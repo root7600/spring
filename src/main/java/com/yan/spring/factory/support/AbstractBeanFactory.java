@@ -30,6 +30,10 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
         return (T)createBean(name, beanDefinition,args);
     }
 
+    @Override
+    public <T> T getBean(String name, Class<T> classType) {
+        return (T)doGetBean(name);
+    }
 
     protected abstract BeanDefinition getBeanDefinition(String beanName) throws SpringBeanException;
 

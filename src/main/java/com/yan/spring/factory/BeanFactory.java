@@ -24,4 +24,11 @@ public interface BeanFactory {
      * @throws SpringBeanException
      */
     Object getBean(String name, Object... args) throws SpringBeanException;
+
+    /**
+     * 获取对象
+     * @param name
+     * @return
+     */
+    <T> T getBean(String name,Class<T> classType);
 }
