@@ -1,7 +1,10 @@
 package com.yan.spring;
 
+import cn.hutool.core.io.IoUtil;
 import com.yan.spring.bean.UserDao;
 import com.yan.spring.bean.UserService;
+import com.yan.spring.core.io.DefaultResourceLoader;
+import com.yan.spring.core.io.Resource;
 import com.yan.spring.factory.PropertyValue;
 import com.yan.spring.factory.PropertyValues;
 import com.yan.spring.factory.config.BeanDefinition;
@@ -9,8 +12,11 @@ import com.yan.spring.factory.config.BeanReference;
 import com.yan.spring.factory.support.DefaultListableBeanFactory;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -91,6 +97,37 @@ public class ApplicationTests {
         // 5. UserService 获取bean
         UserService userService = (UserService) beanFactory.getBean("userService");
         userService.say("hairui");
+    }
+
+    private DefaultResourceLoader resourceLoader;
+
+    @Before
+    public void init() {
+        resourceLoader = new DefaultResourceLoader();
+    }
+
+    @Test
+    public void test_classpath() throws IOException {
+        Resource resource = resourceLoader.getResource("classpath:important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_file() throws IOException {
+        Resource resource = resourceLoader.getResource("src/main/resources/important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
+    }
+
+    @Test
+    public void test_url() throws IOException {
+        Resource resource = resourceLoader.getResource("'https://github.com/root7600/spring/important.properties");
+        InputStream inputStream = resource.getInputStream();
+        String content = IoUtil.readUtf8(inputStream);
+        System.out.println(content);
     }
 
 }

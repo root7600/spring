@@ -26,7 +26,7 @@ public class ClassPathResource implements Resource{
     }
 
     public ClassPathResource(String path) {
-        this.path = path;
+        this(path,null);
     }
 
     @Override
