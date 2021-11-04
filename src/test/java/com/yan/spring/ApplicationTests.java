@@ -178,4 +178,15 @@ public class ApplicationTests {
         UserService userService = applicationContext.getBean("userService", UserService.class);
         userService.say("hairui");
     }
+
+    @Test
+    public void test_xml_v2() {
+        // 1.初始化 BeanFactory
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.registerShutdownHook();
+
+        // 2. 获取Bean对象调用方法
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        userService.say("hairui");
+    }
 }

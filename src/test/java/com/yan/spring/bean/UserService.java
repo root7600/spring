@@ -1,11 +1,14 @@
 package com.yan.spring.bean;
 
+import com.yan.spring.factory.DisposableBean;
+import com.yan.spring.factory.InitializingBean;
+
 /**
  * @author hairui
  * @date 2021/11/1
  * @des
  */
-public class UserService {
+public class UserService implements InitializingBean , DisposableBean {
 
     private String uId;
 
@@ -48,5 +51,15 @@ public class UserService {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("userService---destroy");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("userService---init");
     }
 }
