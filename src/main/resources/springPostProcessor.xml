@@ -11,5 +11,6 @@
     </bean>
 
     <bean class="com.yan.spring.common.MyBeanFactoryPostProcessor"/>
+    <bean class="com.yan.spring.common.MySecondBeanFactoryPostProcessor"/>
     <bean class="com.yan.spring.common.MyBeanPostProcessor"/>
 </beans>
