@@ -1,5 +1,12 @@
 package com.yan.spring.bean;
 
+import com.yan.spring.context.ApplicationContext;
+import com.yan.spring.exception.SpringBeanException;
+import com.yan.spring.factory.ApplicationContextAware;
+import com.yan.spring.factory.BeanClassLoaderAware;
+import com.yan.spring.factory.BeanFactory;
+import com.yan.spring.factory.BeanFactoryAware;
+import com.yan.spring.factory.BeanNameAware;
 import com.yan.spring.factory.DisposableBean;
 import com.yan.spring.factory.InitializingBean;
 
@@ -8,7 +15,7 @@ import com.yan.spring.factory.InitializingBean;
  * @date 2021/11/1
  * @des
  */
-public class UserService implements InitializingBean , DisposableBean {
+public class UserService implements BeanNameAware, BeanClassLoaderAware, ApplicationContextAware, BeanFactoryAware {
 
     private String uId;
 
@@ -54,12 +61,22 @@ public class UserService implements InitializingBean , DisposableBean {
     }
 
     @Override
-    public void destroy() throws Exception {
-        System.out.println("userService---destroy");
+    public void setApplicationContext(ApplicationContext applicationContext) throws SpringBeanException {
+        System.out.println("applicationContext:"+applicationContext);
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        System.out.println("userService---init");
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        System.out.println("classLoader:"+classLoader);
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws SpringBeanException {
+        System.out.println("beanFactory:"+beanFactory);
+    }
+
+    @Override
+    public void setBeanName(String name) {
+        System.out.println("name:"+name);
     }
 }
