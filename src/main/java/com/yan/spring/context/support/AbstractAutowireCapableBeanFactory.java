@@ -1,7 +1,10 @@
 package com.yan.spring.context.support;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.yan.spring.exception.SpringBeanException;
+import com.yan.spring.factory.DisposableBean;
+import com.yan.spring.factory.InitializingBean;
 import com.yan.spring.factory.PropertyValue;
 import com.yan.spring.factory.PropertyValues;
 import com.yan.spring.factory.config.AutowireCapableBeanFactory;
@@ -10,6 +13,7 @@ import com.yan.spring.factory.config.BeanPostProcessor;
 import com.yan.spring.factory.config.BeanReference;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 /**
  * @author hairui
@@ -32,6 +36,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }catch (Exception e){
             throw new SpringBeanException("Instantiation of bean failed", e);
         }
+        //注册销毁的bean
+        registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
+
         addSingleton(beanName,bean);
         return bean;
     }
@@ -67,15 +74,37 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
 
         // 待完成内容：invokeInitMethods(beanName, wrappedBean, beanDefinition);
-        invokeInitMethods(beanName, wrappedBean, beanDefinition);
+        try{
+            invokeInitMethods(beanName, wrappedBean, beanDefinition);
+        }catch (Exception e){
 
+        }
         // 2. 执行 BeanPostProcessor After 处理
         wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
         return wrappedBean;
     }
 
-    private void invokeInitMethods(String beanName, Object wrappedBean, BeanDefinition beanDefinition) {
+    private void invokeInitMethods(String beanName, Object wrappedBean, BeanDefinition beanDefinition) throws Exception {
+        // 1. 实现接口 InitializingBean
+        if (wrappedBean instanceof InitializingBean) {
+            ((InitializingBean) wrappedBean).afterPropertiesSet();
+        }
 
+        // 2. 配置信息 init-method {判断是为了避免二次执行销毁}
+        String initMethodName = beanDefinition.getInitMethodName();
+        if (StrUtil.isNotEmpty(initMethodName)) {
+            Method initMethod = beanDefinition.getBean().getMethod(initMethodName);
+            if (null == initMethod) {
+                throw new SpringBeanException("Could not find an init method named '" + initMethodName + "' on bean with name '" + beanName + "'");
+            }
+            initMethod.invoke(wrappedBean);
+        }
+    }
+
+    protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
+            registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+        }
     }
 
     protected Object createBeanInstant(String beanName, BeanDefinition beanDefinition, Object[] args){

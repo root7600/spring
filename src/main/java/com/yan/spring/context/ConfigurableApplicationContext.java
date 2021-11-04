@@ -11,4 +11,8 @@ public interface ConfigurableApplicationContext extends ApplicationContext{
      */
     void refresh() throws SpringBeanException;
 
+    void registerShutdownHook();
+
+    void close();
+
 }
