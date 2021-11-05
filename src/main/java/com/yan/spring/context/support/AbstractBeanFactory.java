@@ -2,6 +2,7 @@ package com.yan.spring.context.support;
 
 import com.yan.spring.exception.SpringBeanException;
 import com.yan.spring.factory.BeanFactory;
+import com.yan.spring.factory.FactoryBean;
 import com.yan.spring.factory.config.BeanDefinition;
 import com.yan.spring.factory.config.BeanPostProcessor;
 import com.yan.spring.factory.config.ConfigurableBeanFactory;
@@ -15,7 +16,7 @@ import java.util.List;
  * @date 2021/11/1
  * @des
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport  implements ConfigurableBeanFactory {
 
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
@@ -33,9 +34,11 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     }
 
     protected <T> T doGetBean(String name, Object... args){
-        Object bean = this.getSingleton(name);
-        if (bean != null) {
-            return (T)bean;
+
+        Object sharedInstance = getSingleton(name);
+        if (sharedInstance != null) {
+            // 如果是 FactoryBean，则需要调用 FactoryBean#getObject
+            return (T) getObjectForBeanInstance(sharedInstance, name);
         }
         BeanDefinition beanDefinition = getBeanDefinition(name);
         return (T)createBean(name, beanDefinition,args);
@@ -67,6 +70,21 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     public ClassLoader getBeanClassLoader() {
         return this.beanClassLoader;
+    }
+
+    private Object getObjectForBeanInstance(Object beanInstance, String beanName) {
+        if (!(beanInstance instanceof FactoryBean)) {
+            return beanInstance;
+        }
+
+        Object object = getCachedObjectForFactoryBean(beanName);
+
+        if (object == null) {
+            FactoryBean<?> factoryBean = (FactoryBean<?>) beanInstance;
+            object = getObjectFromFactoryBean(factoryBean, beanName);
+        }
+
+        return object;
     }
 
 }

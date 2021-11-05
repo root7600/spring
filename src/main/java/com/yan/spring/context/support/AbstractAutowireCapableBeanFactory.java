@@ -32,18 +32,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws SpringBeanException {
         Object bean = null;
         try{
+            //通过cglib实例化对象
             bean = createBeanInstant(beanName,beanDefinition,args);
             //填充属性
             this.applyPropertyValues(beanName,bean,beanDefinition);
             // 执行 Bean 的初始化方法和 BeanPostProcessor 的前置和后置处理方法
             initializeBean(beanName,bean,beanDefinition);
+
         }catch (Exception e){
             throw new SpringBeanException("Instantiation of bean failed", e);
         }
         //注册销毁的bean
         registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
-
-        addSingleton(beanName,bean);
+        if (beanDefinition.isSingleton()) {
+            addSingleton(beanName, bean);
+        }
         return bean;
     }
 
@@ -120,6 +123,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        // 非 Singleton 类型的 Bean 不执行销毁方法
+        if (!beanDefinition.isSingleton()){
+            return;
+        }
+
         if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
             registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
         }

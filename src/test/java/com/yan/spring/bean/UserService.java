@@ -24,6 +24,12 @@ public class UserService implements BeanNameAware, BeanClassLoaderAware, Applica
 
     private UserDao userDao;
 
+    private ItemDao itemDao;
+
+    public String queryItemInfo() {
+        return itemDao.queryItemName(uId) + "," + company + "," + location;
+    }
+
     public String getuId() {
         return uId;
     }
