@@ -13,4 +13,5 @@
     <bean class="com.yan.spring.common.MyBeanFactoryPostProcessor"/>
     <bean class="com.yan.spring.common.MyBeanPostProcessor"/>
     <bean id="itemDao" class="com.yan.spring.bean.ProxyBeanFactory"/>
+    <bean id="customEventListener" class="com.yan.spring.bean.CustomEventListener"/>
 </beans>

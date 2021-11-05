@@ -1,6 +1,7 @@
 package com.yan.spring;
 
 import cn.hutool.core.io.IoUtil;
+import com.yan.spring.bean.CustomEvent;
 import com.yan.spring.bean.UserDao;
 import com.yan.spring.bean.UserService;
 import com.yan.spring.common.MyBeanFactoryPostProcessor;
@@ -220,5 +221,13 @@ public class ApplicationTests {
         // 2. 调用代理方法
         UserService userService = applicationContext.getBean("userService", UserService.class);
         System.out.println("测试结果：" + userService.queryItemInfo());
+    }
+
+    @Test
+    public void test_event() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        applicationContext.publishEvent(new CustomEvent(applicationContext, 1019129009086763L, "成功了！"));
+
+        applicationContext.registerShutdownHook();
     }
 }
