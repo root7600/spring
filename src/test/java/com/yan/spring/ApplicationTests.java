@@ -299,4 +299,26 @@ public class ApplicationTests {
         // 测试调用
         System.out.println("测试结果：" + proxy_cglib.register("花花"));
     }
+
+    @Test
+    public void test_aop() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        IItemService userService = applicationContext.getBean("itemService", IItemService.class);
+        System.out.println("测试结果：" + userService.queryUserInfo());
+    }
+
+    @Test
+    public void test_property() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-property.xml");
+        IItemService userService = applicationContext.getBean("itemService", IItemService.class);
+        System.out.println("测试结果：" + userService);
+    }
+
+    @Test
+    public void test_scan() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-scan.xml");
+        IItemService userService = applicationContext.getBean("itemService", IItemService.class);
+        System.out.println("测试结果：" + userService.queryUserInfo());
+    }
+
 }

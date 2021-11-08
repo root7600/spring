@@ -1,5 +1,7 @@
 package com.yan.spring.bean;
 
+import com.yan.spring.context.annotation.Component;
+
 import java.util.Random;
 
 /**
@@ -7,7 +9,10 @@ import java.util.Random;
  * @date 2021/11/7
  * @des
  */
+@Component("itemService")
 public class ItemService implements IItemService{
+
+    private String token;
 
     public String queryUserInfo() {
         try {

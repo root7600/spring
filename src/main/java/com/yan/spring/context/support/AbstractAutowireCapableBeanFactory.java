@@ -15,6 +15,7 @@ import com.yan.spring.factory.config.AutowireCapableBeanFactory;
 import com.yan.spring.factory.config.BeanDefinition;
 import com.yan.spring.factory.config.BeanPostProcessor;
 import com.yan.spring.factory.config.BeanReference;
+import com.yan.spring.factory.config.InstantiationAwareBeanPostProcessor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -32,12 +33,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws SpringBeanException {
         Object bean = null;
         try{
+            // 判断是否返回代理 Bean 对象
+            bean = resolveBeforeInstantiation(beanName, beanDefinition);
+            if(bean != null){
+                return bean;
+            }
+
             //通过cglib实例化对象
             bean = createBeanInstant(beanName,beanDefinition,args);
+
+            // 在设置 Bean 属性之前，允许 BeanPostProcessor 修改属性值
+            this.applyBeanPostProcessorsBeforeApplyingPropertyValues(beanName, bean, beanDefinition);
+
             //填充属性
             this.applyPropertyValues(beanName,bean,beanDefinition);
+
             // 执行 Bean 的初始化方法和 BeanPostProcessor 的前置和后置处理方法
-            initializeBean(beanName,bean,beanDefinition);
+            this.initializeBean(beanName,bean,beanDefinition);
 
         }catch (Exception e){
             throw new SpringBeanException("Instantiation of bean failed", e);
@@ -50,6 +62,36 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return bean;
     }
 
+    private void applyBeanPostProcessorsBeforeApplyingPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition){
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor){
+                PropertyValues pvs = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).postProcessPropertyValues(beanDefinition.getPropertyValues(), bean, beanName);
+                if (null != pvs) {
+                    for (PropertyValue propertyValue : pvs.getPropertyValues()) {
+                        beanDefinition.getPropertyValues().addPropertyValue(propertyValue);
+                    }
+                }
+            }
+        }
+    }
+
+    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
+        Object bean = applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBean(), beanName);
+        if (null != bean) {
+            bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+        }
+        return bean;
+    }
+
+    protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+                Object result = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).postProcessBeforeInstantiation(beanClass, beanName);
+                if (null != result) return result;
+            }
+        }
+        return null;
+    }
     @Override
     public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws SpringBeanException {
         Object result = existingBean;

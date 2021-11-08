@@ -37,7 +37,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         // 3. 添加 ApplicationContextAwareProcessor，让继承自 ApplicationContextAware 的 Bean 对象都能感知所属的 ApplicationContext
         beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
-
         // 3. 在 Bean 实例化之前，执行 BeanFactoryPostProcessor (Invoke factory processors registered as beans in the context.)
         invokeBeanFactoryPostProcessors(beanFactory);
 
@@ -88,6 +87,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     @Override
     public <T> T getBean(String name, Class<T> classType) {
         return getBeanFactory().getBean(name,classType);
+    }
+
+    @Override
+    public <T> T getBean(Class<T> requiredType) throws SpringBeanException {
+        return getBeanFactory().getBean(requiredType);
     }
 
     @Override

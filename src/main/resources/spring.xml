@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
 
-    <bean id="userDao" class="com.yan.spring.bean.UserDao" init-method="initDataMethod" destroy-method="destroyDataMethod"/>
+   <!-- <bean id="userDao" class="com.yan.spring.bean.UserDao" init-method="initDataMethod" destroy-method="destroyDataMethod"/>
 
     <bean id="userService" class="com.yan.spring.bean.UserService" scope="prototype">
         <property name="uId" value="10001"/>
@@ -13,5 +13,20 @@
     <bean class="com.yan.spring.common.MyBeanFactoryPostProcessor"/>
     <bean class="com.yan.spring.common.MyBeanPostProcessor"/>
     <bean id="itemDao" class="com.yan.spring.bean.ProxyBeanFactory"/>
-    <bean id="customEventListener" class="com.yan.spring.bean.CustomEventListener"/>
+    <bean id="customEventListener" class="com.yan.spring.bean.CustomEventListener"/>-->
+
+    <bean id="itemService" class="com.yan.spring.bean.ItemService"/>
+
+    <bean class="com.yan.spring.aop.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
+    <bean id="beforeAdvice" class="com.yan.spring.bean.UserServiceBeforeAdvice"/>
+
+    <bean id="methodInterceptor" class="com.yan.spring.aop.adapter.MethodBeforeAdviceInterceptor">
+        <property name="advice" ref="beforeAdvice"/>
+    </bean>
+
+    <bean id="pointcutAdvisor" class="com.yan.spring.aop.aspectj.AspectJExpressionPointcutAdvisor">
+        <property name="expression" value="execution(* com.yan.spring.bean.IItemService.*(..))"/>
+        <property name="advice" ref="methodInterceptor"/>
+    </bean>
 </beans>

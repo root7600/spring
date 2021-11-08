@@ -1,6 +1,9 @@
 package com.yan.spring.bean;
 
 import com.yan.spring.context.ApplicationContext;
+import com.yan.spring.context.annotation.Autowired;
+import com.yan.spring.context.annotation.Component;
+import com.yan.spring.context.annotation.Value;
 import com.yan.spring.exception.SpringBeanException;
 import com.yan.spring.factory.ApplicationContextAware;
 import com.yan.spring.factory.BeanClassLoaderAware;
@@ -15,6 +18,7 @@ import com.yan.spring.factory.InitializingBean;
  * @date 2021/11/1
  * @des
  */
+@Component
 public class UserService implements BeanNameAware, BeanClassLoaderAware, ApplicationContextAware, BeanFactoryAware {
 
     private String uId;
@@ -24,6 +28,7 @@ public class UserService implements BeanNameAware, BeanClassLoaderAware, Applica
 
     private UserDao userDao;
 
+    @Autowired
     private ItemDao itemDao;
 
     public String queryItemInfo() {
