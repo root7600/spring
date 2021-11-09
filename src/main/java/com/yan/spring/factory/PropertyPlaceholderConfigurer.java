@@ -69,6 +69,7 @@ public class PropertyPlaceholderConfigurer implements BeanFactoryPostProcessor {
             String propVal = properties.getProperty(propKey);
             buffer.replace(startIdx, stopIdx + 1, propVal);
         }
+        
         return buffer.toString();
     }
 
