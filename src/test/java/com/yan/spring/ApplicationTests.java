@@ -317,7 +317,7 @@ public class ApplicationTests {
     @Test
     public void test_scan() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-scan.xml");
-        IItemService userService = applicationContext.getBean("itemService", IItemService.class);
+        IItemService userService = applicationContext.getBean("itemService", ItemService.class);
         System.out.println("测试结果：" + userService.queryUserInfo());
     }
 

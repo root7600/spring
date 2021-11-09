@@ -20,6 +20,15 @@ public class FactoryBeanRegistrySupport extends DefaultSingletonBeanRegistry{
      */
     private final Map<String, Object> factoryBeanObjectCache = new ConcurrentHashMap<String, Object>();
 
+    // 一级缓存，普通对象
+    private final Map<String, Object> singletonFactories = new ConcurrentHashMap<String, Object>();
+
+    // 二级缓存，提前暴漏对象，没有完全实例化的对象
+    private final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<String, Object>();
+
+    // 三级缓存，存放代理对象
+    private final Map<String, Object> singletonObjects = new ConcurrentHashMap<String, Object>();
+
     protected Object getCachedObjectForFactoryBean(String beanName) {
         Object object = this.factoryBeanObjectCache.get(beanName);
         return (object != NULL_OBJECT ? object : null);
